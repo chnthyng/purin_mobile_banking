@@ -1,3 +1,35 @@
 spring:
+  docker:
+    compose:
+      enabled: false # 🔥 สั่งปิดการทำงานระบบ Docker Compose อัตโนมัติทั้งหมด
+  profiles:
+    active: secret  # 🔥 ต้องระบุให้โปรไฟล์นี้ทำงานด้วยตอนรันแอปปกติ
+    include:
+      - secret
   application:
-    name: purin_mobile_banking
+    name: purin_bank
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?sslmode=require
+    username: postgres.mxbexoylgfgijwgmviiq
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      # สำคัญ: ถ้าใช้ pooler แบบ transaction mode ต้องปิด prepared statement caching ฝั่ง client
+      data-source-properties:
+        prepareThreshold: 0
+
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          # ปิด statement caching เพราะ pgbouncer transaction mode ไม่รองรับ prepared statements แบบเต็ม
+          jdbc:
+            lob:
+              non_contextual_creation: true
+      show-sql: false
+
+crypto:
+  secret-key: ${crypto.secret-key}
