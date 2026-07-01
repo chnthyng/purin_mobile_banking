@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: purin_mobile_banking
