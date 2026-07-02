@@ -3,9 +3,11 @@ package me.purin.purin_mobile_banking.exception;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +53,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Validation Failed",
                         "One or more fields are invalid", fieldErrors));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Bad Request",
+                        "Required request body is missing or malformed"));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String message = String.format("Parameter '%s' value '%s' is invalid", ex.getName(), ex.getValue());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Bad Request", message));
     }
 
     @ExceptionHandler(Exception.class)
