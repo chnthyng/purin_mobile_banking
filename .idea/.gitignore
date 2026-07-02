@@ -13,4 +13,4 @@
 target/
 
 # Sensitive configuration files
-application-secret.yaml
+**/application-secret.yaml
