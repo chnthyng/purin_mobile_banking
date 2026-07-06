@@ -1,2 +1,2 @@
-# purin_mobile_banking_servie
-purin_mobile_banking_service
+# purin_mobile_banking_backend
+purin_mobile_banking_backend
